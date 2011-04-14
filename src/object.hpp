@@ -34,7 +34,12 @@ namespace lisp {
                 return false;
             }
 
-        virtual bool is_symbol() const
+        /**
+           @brief Is overridden by the symbol class and
+           should only return true in that case. Otherwise
+           it should always return false.
+        */
+        virtual bool is_symbol_ref() const
             {
                 return false;
             }
@@ -62,7 +67,9 @@ namespace lisp {
            @brief Can be overridden by object-classes. Is called in
            funcall contexts.
 
-           The raw version throws an exception.
+           For this method the same rules as for the eval() method
+           exist. If it returns a null pointer, a exception is thrown
+           to signal that this object is not callable.
         */
         virtual object_ptr_t operator()(environment* env,
                                         const cons_cell_ptr_t = cons_cell_ptr_t());

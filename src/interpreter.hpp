@@ -24,6 +24,11 @@ namespace lisp {
 
             if(lisp_token == RIGHT_PARENTHESIS)
                 return nil();
+            else if(lisp_token == DOT) {
+                // Fetch next token to skip dot.
+                tok.next_token();
+                return compile_expr(env, tok);
+            }
             else {
                 car = compile_expr(env, tok);
                 //assert(*car);
@@ -45,7 +50,12 @@ namespace lisp {
             case LEFT_PARENTHESIS:
                 return compile_list(env, tok);
             case SYMBOL:
-                return env->get_symbol(tok.value());
+                if(tok.value() == "nil")
+                    return nil();
+                else if(tok.value() == "t")
+                    return t();
+
+                return object_ptr_t(new symbol_ref(tok.value()));
             case STRING:
                 return object_ptr_t(new string(tok.value()));
             case NUMBER:
@@ -55,6 +65,9 @@ namespace lisp {
                 else
                     return object_ptr_t(new number<int>(tok.value()));
             }
+            case QUOTE:
+                tok.next_token();
+                return object_ptr_t(new quote(compile_expr(env, tok)));
             default:
                 assert(false);
                 return nil();

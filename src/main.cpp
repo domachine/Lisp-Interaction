@@ -25,7 +25,6 @@ int test_gc()
         lisp::environment env(lisp::global_env());
 
         symbol = env.get_symbol("throw-away-symbol");
-        symbol->set_value(lisp::t());
     }
 
     log(DEBUG) << "garbage collection deadline, returning" << std::endl;
@@ -57,13 +56,19 @@ protected:
         {
             log(DEBUG) << "** Hello world from C in lisp **" << std::endl;
 
-            lisp::object_ptr_t cdr = args;
+            lisp::object_ptr_t cdr = args->cdr();
 
             while(cdr && *cdr) {
-                log(DEBUG) << "arg: "
-                           << boost::dynamic_pointer_cast<lisp::cons_cell>(cdr)->car()->str()
-                           << std::endl;
-                cdr = boost::dynamic_pointer_cast<lisp::cons_cell>(cdr)->cdr();
+                if(!cdr->is_cons_cell()) {
+                    log(DEBUG) << "arg: " << cdr->str() << std::endl;
+                    cdr = lisp::nil();
+                }
+                else {
+                    log(DEBUG) << "arg: "
+                               << env->eval(boost::dynamic_pointer_cast<lisp::cons_cell>(cdr)->car())->str()
+                               << std::endl;
+                    cdr = boost::dynamic_pointer_cast<lisp::cons_cell>(cdr)->cdr();
+                }
             }
 
             return lisp::nil();
@@ -118,12 +123,10 @@ int test_parser()
 
 int test_interpreter()
 {
-    // lisp::global_env()->get_symbol("defun")->set_function(
-    //     lisp::object_ptr_t(new lisp::defun_form()));
-    lisp::global_env()->get_symbol("inline")->set_function(
+    lisp::global_env()->get_symbol("hello-world")->set_function(
         lisp::object_ptr_t(new function()));
 
-    std::string script("(defun () (inline  3..1  list  sym))");
+    std::string script("(defun (a) (hello-world 'a))");
     std::string::iterator iter = script.begin();
 
     lisp::tokenizer<std::string::iterator> tok(iter, script.end());
@@ -134,11 +137,17 @@ int test_interpreter()
     log(DEBUG) << "compiled list: " << obj->str() << std::endl;
     lisp::object_ptr_t func = lisp::global_env()->eval(obj);
 
-    lisp::global_env()->funcall(func);
+    lisp::global_env()->funcall(func,
+                                lisp::cons_cell_ptr_t(
+                                    new lisp::cons_cell(lisp::object_ptr_t(
+                                                      new lisp::number<float>(4.5)))));
 
     return 0;
 }
 
+int test_interpreter2()
+{
+}
 
 int main()
 {

@@ -1,6 +1,8 @@
 
 #include "function.hpp"
 
+#include "logging.hpp"
+
 
 namespace lisp {
     function::function(const arg_sym_list_t& arg_symbols,
@@ -13,6 +15,9 @@ namespace lisp {
 
     object_ptr_t function::operator()(environment* env, const cons_cell_ptr_t args)
     {
+        using logging::log;
+        using logging::DEBUG;
+
         // Create isolated environment.
         environment func_env(env);
 
@@ -21,7 +26,7 @@ namespace lisp {
         object_ptr_t cdr_ = nil();
 
         if(args)
-            args->cdr();
+            cdr_ = args;
 
         // Assign all given args to corresponding symbols
         // in the function environment.
@@ -95,8 +100,8 @@ namespace lisp {
             cons_cell_ptr_t arg_list_cell = boost::dynamic_pointer_cast<cons_cell>(arg_list);
 
             while(arg_list_cell && *arg_list_cell) {
-                if(arg_list_cell->car()->is_symbol()) {
-                    symbol_ptr_t sym = boost::dynamic_pointer_cast<symbol>(arg_list_cell->car());
+                if(arg_list_cell->car()->is_symbol_ref()) {
+                    symbol_ref_ptr_t sym = boost::dynamic_pointer_cast<symbol_ref>(arg_list_cell->car());
                     function_arg_list.push_back(sym->name());
 
                     arg_list_cell = boost::dynamic_pointer_cast<cons_cell>(arg_list_cell->cdr());

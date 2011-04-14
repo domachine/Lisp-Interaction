@@ -34,7 +34,9 @@ namespace lisp {
         RIGHT_PARENTHESIS,
         STRING,
         SYMBOL,
-        NUMBER
+        NUMBER,
+        DOT,
+        QUOTE
     };
 
     /**
@@ -74,6 +76,14 @@ namespace lisp {
                     case '"':
                         parse_string();
                         return (m_current_token = STRING);
+                    case '.':
+                        m_cache += *m_iterator;
+                        ++m_iterator;
+                        return (m_current_token = DOT);
+                    case '\'':
+                        m_cache += *m_iterator;
+                        ++m_iterator;
+                        return (m_current_token = QUOTE);
                     case '\n':
                         ++m_line;
                         ++m_iterator;

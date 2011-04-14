@@ -71,6 +71,63 @@ namespace lisp {
     void signal(symbol_ptr_t err_sym, const std::string& what)
     {
         std::cerr << err_sym->name() << " " << what << std::endl;
+
+        /*
+          FIXME: Add a real catchable exception. To build a system
+          comparable to emacs try-catch mechanism.
+        */
+        throw;
+    }
+
+    cons_cell::cons_cell(object_ptr_t car, object_ptr_t cdr)
+        : object(),
+          m_car(car),
+          m_cdr(cdr)
+    {
+        assert(car && cdr);
+    }
+
+    object_ptr_t cons_cell::car() const
+    {
+        return m_car;
+    }
+
+    object_ptr_t cons_cell::cdr() const
+    {
+        return m_cdr;
+    }
+
+    bool cons_cell::empty() const
+    {
+        return m_car == nil() && m_cdr == nil();
+    }
+
+    bool cons_cell::is_cons_cell() const
+    {
+        return true;
+    }
+
+    std::string cons_cell::str() const
+    {
+        std::stringstream os;
+
+        os << "(" << m_car->str();
+
+        if(m_cdr->is_cons_cell()) {
+            cons_cell_ptr_t cell = boost::dynamic_pointer_cast<cons_cell>(m_cdr);
+
+            while(cell && *cell) {
+                os << " " << cell->car()->str();
+
+                cell = boost::dynamic_pointer_cast<lisp::cons_cell>(cell->cdr());
+            }
+        }
+        else if(m_cdr != nil())
+            os << " . " << m_cdr->str();
+
+        os << ")";
+
+        return os.str();
     }
 
     object_ptr_t cons_cell::eval(environment* env)
@@ -92,7 +149,25 @@ namespace lisp {
     object_ptr_t symbol::operator()(environment* env,
                             const cons_cell_ptr_t args)
     {
-        return env->funcall(m_function, args);
+        if(m_function && *m_function)
+            return env->funcall(m_function, args);
+        else
+            return object_ptr_t();
+    }
+
+    object_ptr_t symbol_ref::eval(environment* env)
+    {
+        symbol_ptr_t sym = env->get_symbol(m_name);
+
+        return env->eval(sym);
+    }
+
+    object_ptr_t symbol_ref::operator()(environment* env,
+                                        const cons_cell_ptr_t args)
+    {
+        symbol_ptr_t sym = env->get_symbol(m_name);
+
+        return (*sym)(env, args);
     }
 
     void environment::deleter::operator()(symbol* sym)

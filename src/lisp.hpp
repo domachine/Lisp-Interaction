@@ -24,6 +24,10 @@ namespace lisp {
     environment* global_env();
 
 
+    /**
+       @brief Special t-object that does nothing but
+       returning `true' in boolean context.
+    */
     class t_object : public object
     {
     public:
@@ -62,6 +66,8 @@ namespace lisp {
         friend const object_ptr_t nil();
 
     private:
+        // Make it impossible to instantiate an
+        // object without using the nil() function.
         nil_object()
             : object()
             {
@@ -72,56 +78,17 @@ namespace lisp {
     {
     public:
         cons_cell(object_ptr_t car = nil(),
-                  object_ptr_t cdr = nil())
-            : object(),
-              m_car(car),
-              m_cdr(cdr)
-            {
-                assert(car && cdr);
-            }
+                  object_ptr_t cdr = nil());
 
-        object_ptr_t car() const
-            {
-                return m_car;
-            }
+        object_ptr_t car() const;
 
-        object_ptr_t cdr() const
-            {
-                return m_cdr;
-            }
+        object_ptr_t cdr() const;
 
-        bool empty() const
-            {
-                return m_car == nil() && m_cdr == nil();
-            }
+        bool empty() const;
 
-        bool is_cons_cell() const
-            {
-                return true;
-            }
+        bool is_cons_cell() const;
 
-        std::string str() const
-            {
-                std::stringstream os;
-
-                os << "(" << m_car->str();
-
-                if(m_cdr->is_cons_cell()) {
-                    cons_cell_ptr_t cell = boost::dynamic_pointer_cast<cons_cell>(m_cdr);
-
-                    while(cell && *cell) {
-                        os << " " << cell->car()->str();
-
-                        cell = boost::dynamic_pointer_cast<lisp::cons_cell>(cell->cdr());
-                    }
-                }
-                else
-                    os << " . " << m_cdr->str();
-
-                os << ")";
-
-                return os.str();
-            }
+        std::string str() const;
 
     protected:
         object_ptr_t eval(environment* env);
@@ -131,11 +98,23 @@ namespace lisp {
         object_ptr_t m_cdr;
     };
 
-    // class environment;
 
+    class symbol_ref;
+
+    /**
+       @brief The class that represents a lisp-symbol.
+
+       This class cannot be instantiated manually.
+       Because the garbage collector needs to be sure that
+       a symbol only exists once.
+
+       So use environment::get_symbol() to get a pointer
+       to a symbol.
+    */
     class symbol : public object
     {
     public:
+        friend class symbol_ref;
         friend class environment;
 
         const std::string& name() const
@@ -244,6 +223,43 @@ namespace lisp {
         environment* m_env;
     };
 
+    typedef boost::shared_ptr<symbol> symbol_ptr_t;
+
+    class symbol_ref : public object
+    {
+    public:
+        symbol_ref(const std::string& name)
+            : m_name(name)
+            {
+            }
+
+        std::string str() const
+            {
+                return m_name;
+            }
+
+        const std::string& name() const
+            {
+                return m_name;
+            }
+
+        bool is_symbol_ref() const
+            {
+                return true;
+            }
+
+    protected:
+        object_ptr_t operator()(environment* env,
+                                const cons_cell_ptr_t args = cons_cell_ptr_t());
+
+        object_ptr_t eval(environment* env);
+
+    private:
+        std::string m_name;
+    };
+
+    typedef boost::shared_ptr<symbol_ref> symbol_ref_ptr_t;
+
     class quote : public object
     {
     public:
@@ -257,6 +273,11 @@ namespace lisp {
               m_object(obj)
             {
                 assert(m_object);
+            }
+
+        std::string str() const
+            {
+                return "'" + m_object->str();
             }
 
     protected:
@@ -274,8 +295,6 @@ namespace lisp {
     private:
         object_ptr_t m_object;
     };
-
-    typedef boost::shared_ptr<symbol> symbol_ptr_t;
 
     void signal(symbol_ptr_t err_sym, const std::string& what);
 
@@ -316,10 +335,35 @@ namespace lisp {
            @brief Checks if the named symbol exists otherwise
            creates a new instance and returns a controlled pointer to
            it.
+
+           @param name The name of the symbol to fetch.
         */
         symbol_ptr_t get_symbol(const std::string& name);
 
+        /**
+           @brief Evaluates the given object by calling the
+           its eval() method and interpreting return-code.
+
+           If the return-code is a null-pointer the given object is
+           returned otherwise the returned pointer.
+
+           @param obj The object to evaluate.
+           @return See description.
+        */
         object_ptr_t eval(object_ptr_t obj);
+
+        /**
+           @brief Used to call a function object.
+
+           Calls the object's operator() method and interprets
+           the return-code. If the method returns a null-pointer
+           funcall() throws a lisp exception to signal that this
+           is not a function object.
+
+           @param obj The object to call.
+           @param args The arguments to pass to the function object.
+           @return The result of the called function.
+         */
         object_ptr_t funcall(object_ptr_t obj,
                              const cons_cell_ptr_t args = cons_cell_ptr_t());
 
