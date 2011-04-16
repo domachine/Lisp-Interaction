@@ -23,11 +23,24 @@ namespace lisp {
             object_ptr_t car, cdr;
 
             if(lisp_token == RIGHT_PARENTHESIS)
+                // End of list reached.
                 return nil();
+            else if(lisp_token == END)
+                // Unexpected end of file in list.
+                throw parse_error("unexpected end of file", tok.line());
             else if(lisp_token == DOT) {
                 // Fetch next token to skip dot.
                 tok.next_token();
-                return compile_expr(env, tok);
+                
+                object_ptr_t value = compile_expr(env, tok);
+
+                tok.next_token();
+
+                if(tok.current_token() != RIGHT_PARENTHESIS)
+                    throw parse_error("syntactical incorrent dot token",
+                                      tok.line());
+
+                return value;
             }
             else {
                 car = compile_expr(env, tok);
@@ -69,8 +82,8 @@ namespace lisp {
                 tok.next_token();
                 return object_ptr_t(new quote(compile_expr(env, tok)));
             default:
-                assert(false);
-                return nil();
+                throw parse_error("unexpected token: " + tok.value(),
+                                  tok.line());
             }
         }
 
