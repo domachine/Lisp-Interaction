@@ -8,6 +8,7 @@
 
 #include "lisp.hpp"
 #include "function.hpp"
+#include "forms.hpp"
 
 namespace lisp {
     namespace {
@@ -41,8 +42,18 @@ namespace lisp {
         if(!_global_env_initialized) {
 
             // Register default forms.
-            _global_env.get_symbol("defun")->set_function(
-                object_ptr_t(new defun_form()));
+            _global_env.get_symbol("lambda")->set_function(
+                object_ptr_t(new lambda_form()));
+            _global_env.get_symbol("if")->set_function(
+                object_ptr_t(new if_form()));
+            _global_env.get_symbol("or")->set_function(
+                object_ptr_t(new or_form()));
+            _global_env.get_symbol("and")->set_function(
+                object_ptr_t(new and_form()));
+            _global_env.get_symbol("print")->set_function(
+                object_ptr_t(new print_function()));
+            _global_env.get_symbol("fset")->set_function(
+                object_ptr_t(new fset_form()));
 
             _global_env_initialized = true;
         }
@@ -132,15 +143,42 @@ namespace lisp {
 
     object_ptr_t cons_cell::eval(environment* env)
     {
-        return env->funcall(m_car, cons_cell_ptr_t(
+        object_ptr_t func = m_car;
+
+        if(m_car->is_cons_cell()) {
+            cons_cell_ptr_t car_cell = boost::dynamic_pointer_cast<cons_cell>(m_car);
+
+            if(car_cell->car()->is_symbol_ref() &&
+               boost::dynamic_pointer_cast<symbol_ref>(car_cell->car())->name() == "lambda")
+                func = env->eval(car_cell);
+        }
+
+        return env->funcall(func, cons_cell_ptr_t(
                                 new cons_cell(m_car, m_cdr)));
+    }
+
+    object_ptr_t symbol::value() const
+    {
+        if(!m_value)
+            signal(m_env->get_symbol("void-variable"), m_name);
+
+        return m_value;
+    }
+
+    object_ptr_t symbol::function() const
+    {
+        if(!m_function)
+            signal(m_env->get_symbol("void-variable"), m_name);
+
+        return m_function;
     }
 
     bool symbol::is_useless() const
     {
-        assert(m_value && m_function && m_property_list);
+        assert(m_property_list);
 
-        if(m_value == nil() && m_function == nil() && m_property_list == nil())
+        if((!m_value || m_value == nil()) &&
+           (!m_function || m_function == nil()) && m_property_list == nil())
             return true;
 
         return false;
