@@ -122,17 +122,9 @@ namespace lisp {
                 return m_name;
             }
 
-        object_ptr_t value() const
-            {
-                assert(m_value);
-                return m_value;
-            }
+        object_ptr_t value() const;
 
-        object_ptr_t function() const
-            {
-                assert(m_function);
-                return m_function;
-            }
+        object_ptr_t function() const;
 
         object_ptr_t property_list() const
             {
@@ -189,7 +181,7 @@ namespace lisp {
 
         object_ptr_t eval(environment*)
             {
-                return m_value;
+                return value();
             }
 
     private:
@@ -202,8 +194,6 @@ namespace lisp {
         symbol(environment* env, const std::string& name)
             : object(),
               m_name(name),
-              m_value(nil()),
-              m_function(nil()),
               m_property_list(nil()),
               m_env(env)
             {
