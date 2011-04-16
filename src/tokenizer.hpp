@@ -194,6 +194,11 @@ namespace lisp {
                 return m_current_token;
             }
 
+        int line() const
+            {
+                return m_line;
+            }
+
     protected:
         void warn(const std::string& msg) 
             {
