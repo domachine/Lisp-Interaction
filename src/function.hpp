@@ -5,6 +5,7 @@
 
 #include "lisp.hpp"
 
+
 namespace lisp {
     /**
        @brief Holds a lisp function created through a defun-form.
@@ -45,9 +46,9 @@ namespace lisp {
 
     /**
        @brief The function object which is hold in the function-cell
-       of the symbol `defun' in the global environment.
+       of the symbol `lambda' in the global environment.
      */
-    class defun_form : public object
+    class lambda_form : public object
     {
     public:
         object_ptr_t operator()(environment* env, const cons_cell_ptr_t args);
