@@ -1,4 +1,6 @@
 
+#include <cstring>
+
 #include "logging.hpp"
 
 #include "lisp.hpp"
@@ -126,7 +128,7 @@ int test_interpreter()
     lisp::global_env()->get_symbol("hello-world")->set_function(
         lisp::object_ptr_t(new function()));
 
-    std::string script("(defun (a) (hello-world 'a))");
+    std::string script("(lambda (a) (if nil (hello-world 'a) (hello-world 'b)))");
     std::string::iterator iter = script.begin();
 
     lisp::tokenizer<std::string::iterator> tok(iter, script.end());
@@ -140,23 +142,33 @@ int test_interpreter()
     lisp::global_env()->funcall(func,
                                 lisp::cons_cell_ptr_t(
                                     new lisp::cons_cell(lisp::object_ptr_t(
-                                                      new lisp::number<float>(4.5)))));
+                                                            new lisp::number<float>(4.5)))));
 
     return 0;
 }
 
-int test_interpreter2()
-{
-}
-
-int main()
+int main(int argc, char **argv)
 {
     logging::init(std::cerr);
 
-    return test_gc() +
-        test_print() +
-        test_callable() +
-        test_nil_t() +
-        test_parser() +
-        test_interpreter();
+    if(argc == 1)
+        return test_gc() +
+            test_print() +
+            test_callable() +
+            test_nil_t() +
+            test_parser() +
+            test_interpreter();
+    else {
+        using lisp::tokenizer;
+        using lisp::object_ptr_t;
+
+        tokenizer<char*> tok(argv[1], std::strchr(argv[1], '\0'));
+
+        while(tok.next_token()) {
+            logging::log(logging::DEBUG)
+                << lisp::global_env()->eval(
+                    lisp::interpreter::compile_expr(lisp::global_env(), tok))->str()
+                << std::endl;
+        }
+    }
 }
