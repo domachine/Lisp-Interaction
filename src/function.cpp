@@ -53,66 +53,6 @@ namespace lisp {
         return last_result;
     }
 
-    // object_ptr_t function::operator_bak(environment* env, const cons_cell_ptr_t args)
-    // {
-    //     // Create isolated environment.
-    //     environment func_env(env);
-
-    //     arg_sym_list_t::const_iterator arg_sym_iter = m_arg_symbols.begin();
-
-    //     object_ptr_t cdr_ = nil();
-
-    //     if(args)
-    //         cdr_ = args->cdr();
-
-    //     // Assign all given args to corresponding symbols
-    //     // in the function environment.
-    //     while(cdr_ != nil()) {
-    //         object_ptr_t car_;
-
-    //         if(cdr_->is_cons_cell())
-    //             // Seems to be risky but it's not :-)
-    //             car_ = boost::dynamic_pointer_cast<cons_cell>(cdr_)->car();
-    //         else
-    //             signal(env->get_symbol("wrong-type-argument"),
-    //                    "listp " + cdr_->str());
-
-    //         if(arg_sym_iter == m_arg_symbols.end())
-    //             signal(env->get_symbol("wrong-number-of-arguments"),
-    //                    args->car()->str());
-
-    //         // Create new symbol in function environment.
-    //         symbol_ptr_t new_sym = func_env.create_symbol(*arg_sym_iter);
-    //         new_sym->set_value(env->eval(car_));
-
-    //         ++arg_sym_iter;
-
-    //         cdr_ = boost::dynamic_pointer_cast<cons_cell>(cdr_)->cdr();
-    //     }
-
-    //     object_ptr_t last_result = nil();
-    //     cdr_ = nil();
-
-    //     if(m_body)
-    //         cdr_ = m_body;
-
-    //     while(cdr_ != nil()) {
-    //         object_ptr_t car_;
-
-    //         if(cdr_->is_cons_cell())
-    //             // Seems to be risky but it's not :-)
-    //             car_ = boost::dynamic_pointer_cast<cons_cell>(cdr_)->car();
-    //         else
-    //             signal(env->get_symbol("wrong-type-argument"),
-    //                    "listp " + cdr_->str());
-
-    //         last_result = func_env.eval(car_);
-    //         cdr_ = boost::dynamic_pointer_cast<cons_cell>(cdr_)->cdr();
-    //     }
-
-    //     return last_result;
-    // }
-
     std::string function::str() const
     {
         std::stringstream os;
