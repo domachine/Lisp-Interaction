@@ -2,7 +2,7 @@
 set(SRC main.cpp
   lisp.cpp
   object.cpp
-  function.cpp
+  function.cpp cxx_function.cpp
   utils.cpp
   logging.cpp)
 
