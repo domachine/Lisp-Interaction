@@ -63,6 +63,8 @@ namespace lisp {
                 if(m_iterator == m_end)
                     return END;
 
+                char last = '\0';
+
                 for(; m_iterator != m_end; ++m_iterator) {
                     switch(*m_iterator) {
                     case '(':
@@ -86,14 +88,19 @@ namespace lisp {
                         return (m_current_token = QUOTE);
                     case '\n':
                         ++m_line;
-                        ++m_iterator;
                     case ' ':
                     case '\t':
-                        continue;
+                        last = *m_iterator;
+                        break;
                     default:
                         return parse_symbol_or_number();
                     }
                 }
+
+                if(m_iterator == m_end && (last == ' ' ||
+                                           last == '\t' ||
+                                           last == '\n'))
+                    return END;
 
                 error("unexpected end of file");
 
