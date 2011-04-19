@@ -54,6 +54,14 @@ namespace lisp {
                 object_ptr_t(new print_function()));
             _global_env.get_symbol("fset")->set_function(
                 object_ptr_t(new fset_form()));
+            _global_env.get_symbol("setf")->set_function(
+                object_ptr_t(new setf_form()));
+            _global_env.get_symbol("setq")->set_function(
+                object_ptr_t(new setq_form()));
+            _global_env.get_symbol("defun")->set_function(
+                object_ptr_t(new defun_form()));
+            _global_env.get_symbol("equal")->set_function(
+                object_ptr_t(new equal_form()));
 
             _global_env_initialized = true;
         }
@@ -168,7 +176,7 @@ namespace lisp {
     object_ptr_t symbol::function() const
     {
         if(!m_function)
-            signal(m_env->get_symbol("void-variable"), m_name);
+            signal(m_env->get_symbol("void-function"), m_name);
 
         return m_function;
     }
@@ -179,6 +187,7 @@ namespace lisp {
 
         if((!m_value || m_value == nil()) &&
            (!m_function || m_function == nil()) && m_property_list == nil())
+           //&& !m_gc_flag)
             return true;
 
         return false;
