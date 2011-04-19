@@ -1,5 +1,7 @@
 
 #include <cstring>
+#include <fstream>
+#include <iterator>
 
 #include "logging.hpp"
 
@@ -162,13 +164,18 @@ int main(int argc, char **argv)
         using lisp::tokenizer;
         using lisp::object_ptr_t;
 
-        tokenizer<char*> tok(argv[1], std::strchr(argv[1], '\0'));
+        const char* file = argv[1];
+
+        std::ifstream infile(file);
+        infile.unsetf(std::ios::skipws);
+
+        std::istream_iterator<char> iter(infile);
+        lisp::tokenizer<std::istream_iterator<char> > tok(iter,
+                                                          std::istream_iterator<char>());
 
         while(tok.next_token()) {
-            logging::log(logging::DEBUG)
-                << lisp::global_env()->eval(
-                    lisp::interpreter::compile_expr(lisp::global_env(), tok))->str()
-                << std::endl;
+            object_ptr_t c = lisp::interpreter::compile_expr(lisp::global_env(), tok);
+            lisp::global_env()->eval(c);
         }
     }
 }
