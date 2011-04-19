@@ -22,6 +22,9 @@ namespace lisp {
 
         cons_cell_ptr_t _args = list_next(args, args->car()->str() + ": listp");
 
+        // Hold all given arguments to save them from garbage collection.
+        std::list<symbol_ptr_t> arg_symbols;
+
         // Assign all given args to corresponding symbols
         // in the function environment.
         BOOST_FOREACH(const std::string& current, m_arg_symbols) {
@@ -32,6 +35,9 @@ namespace lisp {
             // Create new symbol in function environment.
             symbol_ptr_t new_sym = func_env.create_symbol(current);
             new_sym->set_value(env->eval(_args->car()));
+
+            // Push to argument list to save from garbage collection.
+            arg_symbols.push_back(new_sym);
 
             _args = list_next(_args, args->car()->str() + ": listp");
         }
@@ -132,10 +138,13 @@ namespace lisp {
 
             while(arg_list_cell && *arg_list_cell) {
                 if(arg_list_cell->car()->is_symbol_ref()) {
-                    symbol_ref_ptr_t sym = boost::dynamic_pointer_cast<symbol_ref>(arg_list_cell->car());
+                    symbol_ref_ptr_t sym =
+                        boost::dynamic_pointer_cast<symbol_ref>(arg_list_cell->car());
+
                     function_arg_list.push_back(sym->name());
 
-                    arg_list_cell = boost::dynamic_pointer_cast<cons_cell>(arg_list_cell->cdr());
+                    arg_list_cell =
+                        boost::dynamic_pointer_cast<cons_cell>(arg_list_cell->cdr());
                 }
             }
         }
