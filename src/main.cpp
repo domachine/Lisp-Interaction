@@ -149,6 +149,11 @@ int test_interpreter()
     return 0;
 }
 
+/*
+  Usage: ./lisp-test <file>
+
+  File will be interpreted as lisp script.
+*/
 int main(int argc, char **argv)
 {
     logging::init(std::cerr);
