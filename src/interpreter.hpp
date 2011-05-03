@@ -74,9 +74,9 @@ namespace lisp {
             case NUMBER:
             {
                 if(tok.value().find('.') != std::string::npos)
-                    return object_ptr_t(new number<float>(tok.value()));
+                    return object_ptr_t(new float_number(tok.value()));
                 else
-                    return object_ptr_t(new number<int>(tok.value()));
+                    return object_ptr_t(new int_number(tok.value()));
             }
             case QUOTE:
                 tok.next_token();
