@@ -25,8 +25,18 @@ namespace lisp {
     public:
         typedef std::vector<object_ptr_t> arglist_t;
 
+        object()
+            : m_class_id(typeid(*this).name())
+            {
+            }
+
         virtual ~object()
             {
+            }
+
+        virtual bool is_number() const
+            {
+                return false;
             }
 
         virtual bool is_cons_cell() const
@@ -51,6 +61,16 @@ namespace lisp {
 
         virtual operator bool() const;
 
+        virtual bool operator==(const object& other)
+            {
+                return m_class_id == other.m_class_id;
+            }
+
+        const std::string& class_id() const
+            {
+                return m_class_id;
+            }
+
         friend class environment;
 
     protected:
@@ -73,6 +93,9 @@ namespace lisp {
         */
         virtual object_ptr_t operator()(environment* env,
                                         const cons_cell_ptr_t = cons_cell_ptr_t());
+
+    private:
+        std::string m_class_id;
     };
 }
 
