@@ -1,0 +1,16 @@
+
+* TODO-List
+** TODO Implement `equal' form.
+*** State
+    Equal operator for numbers is implemented. One for the `string' type
+    is needed.
+
+    The next stage will be the implementation of the `equal' to expose those operators
+    to the lisp side.
+
+** TODO Tue Apr 19 09:02:16 2011 (Default forms.)
+   Make this default forms customizable through variables or something.
+
+   What I'm talkin' about is this ugly default form list in `src/lisp.cpp'
+   This should be customizable through the user. Maybe by implementing this list
+   as vector so that the user can add it's forms easily.
