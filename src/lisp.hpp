@@ -74,6 +74,11 @@ namespace lisp {
             }
     };
 
+    /**
+       @brief One of lisp's most important objects.
+
+       Used for building lists for example.
+    */
     class cons_cell : public object
     {
     public:
