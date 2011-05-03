@@ -87,7 +87,7 @@ int test_callable()
     sym->set_function(lisp::object_ptr_t(new function()));
 
     lisp::global_env()->eval(lisp::object_ptr_t(new lisp::cons_cell(sym)));
-    log(DEBUG) << "evaluated: " << lisp::global_env()->eval(sym)->str() << std::endl;
+    //log(DEBUG) << "evaluated: " << lisp::global_env()->eval(sym)->str() << std::endl;
 
     return 0;
 }
@@ -130,7 +130,7 @@ int test_interpreter()
     lisp::global_env()->get_symbol("hello-world")->set_function(
         lisp::object_ptr_t(new function()));
 
-    std::string script("(lambda (a) (if nil (hello-world 'a) (hello-world 'b)))");
+    std::string script("(lambda (a) (if nil (hello-world 'a) (hello-world a)))");
     std::string::iterator iter = script.begin();
 
     lisp::tokenizer<std::string::iterator> tok(iter, script.end());
@@ -138,13 +138,19 @@ int test_interpreter()
 
     lisp::object_ptr_t obj = lisp::interpreter::compile_expr(lisp::global_env(), tok);
 
-    log(DEBUG) << "compiled list: " << obj->str() << std::endl;
+    log(DEBUG) << "function: "
+               << lisp::global_env()->eval(obj)->str() << std::endl;
+
     lisp::object_ptr_t func = lisp::global_env()->eval(obj);
 
     lisp::global_env()->funcall(func,
                                 lisp::cons_cell_ptr_t(
-                                    new lisp::cons_cell(lisp::object_ptr_t(
-                                                            new lisp::number<float>(4.5)))));
+                                    new lisp::cons_cell(
+                                        func,
+                                        lisp::cons_cell_ptr_t(
+                                            new lisp::cons_cell(
+                                                lisp::object_ptr_t(
+                                                    new lisp::float_number(4.5)))))));
 
     return 0;
 }
