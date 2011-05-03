@@ -13,4 +13,5 @@
 
    What I'm talkin' about is this ugly default form list in `src/lisp.cpp'
    This should be customizable through the user. Maybe by implementing this list
-   as vector so that the user can add it's forms easily.
+   as vector so that the user can add his forms easily by using a function
+   (which must be implemented too).
