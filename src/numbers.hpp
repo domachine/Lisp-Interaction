@@ -31,6 +31,8 @@ namespace lisp {
             }
     };
 
+    typedef boost::shared_ptr<number> number_ptr_t;
+
     /**
        @brief The integer implementation.
        @todo Implement this using libgmp to provide arbitrary
@@ -71,6 +73,8 @@ namespace lisp {
         long m_value;
     };
 
+    typedef boost::shared_ptr<int_number> int_number_ptr_t;
+
     class float_number : public number
     {
     public:
@@ -105,6 +109,8 @@ namespace lisp {
     private:
         value_type m_value;
     };
+
+    typedef boost::shared_ptr<float_number> float_number_ptr_t;
 }
 
 #endif  // LISP_NUMBERS_HPP
