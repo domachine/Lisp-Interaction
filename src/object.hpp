@@ -2,6 +2,7 @@
 #define LISP_OBJECT_HPP
 
 #include <vector>
+#include <string>
 
 #include <boost/shared_ptr.hpp>
 
