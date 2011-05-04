@@ -2,6 +2,7 @@
 #define LISP_FORMS_HPP
 
 #include "utils.hpp"
+#include "cxx_function.hpp"
 
 namespace lisp {
     class if_form : public object
@@ -278,6 +279,45 @@ namespace lisp {
                     return nil();
             }
     };
+
+	class plus_form : public cxx_function
+	{
+		object_ptr_t operator()(environment* env,
+                                const argv_t& args)
+			{
+				float sum = 0.0;
+				size_t sz = args.size();
+				bool sum_is_int = true;
+
+				for(unsigned int i = 0; i < sz; i++)
+				{
+					if(args[i]->is_number())
+					{
+						number_ptr_t num = boost::dynamic_pointer_cast<lisp::number>(args[i]);
+						if(num->is_int())
+						{
+							sum += boost::dynamic_pointer_cast<lisp::int_number>(num)->value();
+						}
+						else if(num->is_float())
+						{
+							sum += boost::dynamic_pointer_cast<lisp::float_number>(num)->value();
+							sum_is_int = false;
+						}
+					}
+
+					else
+					{
+						//I have no idea what I should write instead of ???
+						signal(env->get_symbol("wrong-type-argument"), "+: ???");
+					}
+				}
+
+				if(sum_is_int)
+					return int_number_ptr_t(new int_number(sum));
+
+				return float_number_ptr_t(new float_number(sum));
+			}
+	};
 }
 
 #endif  // LISP_FORMS_HPP

@@ -23,7 +23,7 @@ namespace lisp {
 
     bool int_number::is_int() const
     {
-        return false;
+        return true;
     }
 
     int_number::value_type int_number::value() const
