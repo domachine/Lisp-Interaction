@@ -62,7 +62,7 @@ namespace lisp {
                 object_ptr_t(new defun_form()));
             _global_env.get_symbol("equal")->set_function(
                 object_ptr_t(new equal_form()));
-			_global_env.get_symbol("+")->set_function(
+            _global_env.get_symbol("+")->set_function(
                 object_ptr_t(new plus_form()));
 
             _global_env_initialized = true;

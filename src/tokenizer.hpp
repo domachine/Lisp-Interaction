@@ -178,7 +178,7 @@ namespace lisp {
             {
                 m_current_token = NUMBER;
                 bool float_point = false;
-				bool neg_number = true;
+                bool neg_number = true;
 
                 for(; m_iterator != m_end && *m_iterator != ' ' &&
                         *m_iterator != '\t' && *m_iterator != '\n' &&
@@ -197,7 +197,7 @@ namespace lisp {
                         else if(!isdigit(*m_iterator) && !(neg_number && *m_iterator == '-'))
                             m_current_token = SYMBOL;
                     }
-					neg_number = false;
+                    neg_number = false;
                 }
 
                 return m_current_token;
