@@ -2,7 +2,7 @@
 #define LISP_TYPES_HPP
 
 #include "object.hpp"
-#include "numbers.hpp"
+#include "number.hpp"
 
 namespace lisp {
     class string : public object

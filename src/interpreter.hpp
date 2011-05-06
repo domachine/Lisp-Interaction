@@ -5,6 +5,7 @@
 
 #include "lisp.hpp"
 #include "tokenizer.hpp"
+#include "number.hpp"
 
 namespace lisp {
     namespace interpreter

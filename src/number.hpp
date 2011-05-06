@@ -387,6 +387,8 @@ namespace lisp
                 return true;
             }
     };
+
+    typedef boost::shared_ptr<number> number_ptr_t;
 }
 
 #endif // VGS_AnyScalar_H
