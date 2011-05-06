@@ -73,10 +73,26 @@ namespace lisp {
                 return object_ptr_t(new string(tok.value()));
             case NUMBER:
             {
-                if(tok.value().find('.') != std::string::npos)
-                    return object_ptr_t(new float_number(tok.value()));
-                else
-                    return object_ptr_t(new int_number(tok.value()));
+                if(tok.value().find('.') != std::string::npos) {
+                    std::stringstream ss;
+                    ss << tok.value();
+                    double dnum;
+                    ss >> dnum;
+
+                    number_ptr_t num = number_ptr_t(new number(dnum));
+
+                    return num;
+                }
+                else {
+                    std::stringstream ss;
+                    ss << tok.value();
+                    long long lnum;
+                    ss >> lnum;
+
+                    number_ptr_t num = number_ptr_t(new number(lnum));
+
+                    return num;
+                }
             }
             case QUOTE:
                 tok.next_token();
