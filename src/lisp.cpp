@@ -64,6 +64,8 @@ namespace lisp {
                 object_ptr_t(new equal_form()));
             _global_env.get_symbol("+")->set_function(
                 object_ptr_t(new plus_form()));
+            _global_env.get_symbol("/")->set_function(
+                object_ptr_t(new div_form()));
 
             _global_env_initialized = true;
         }

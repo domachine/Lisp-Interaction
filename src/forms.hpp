@@ -304,6 +304,37 @@ namespace lisp {
                 return sum;
             }
     };
+
+    class div_form : public cxx_function
+    {
+        object_ptr_t operator()(environment* env,
+                                const argv_t& args)
+            {
+
+                size_t sz = args.size();
+                if(sz <= 1)
+                    signal(env->get_symbol("wrong-number-of-arguments"),
+                           "/");
+                if(!args[0]->is_number())
+                    signal(env->get_symbol("wrong-type-argument"), "/: numberp " + args[0]->str());
+
+                number_ptr_t res =  boost::dynamic_pointer_cast<lisp::number>(args[0]);
+
+                for(unsigned int i = 1; i < sz; i++)
+                {
+                    if(args[i]->is_number())
+                    {
+                        number_ptr_t num = boost::dynamic_pointer_cast<lisp::number>(args[i]);
+
+                        *res = *res / *num;
+                    }
+                    else
+                        signal(env->get_symbol("wrong-type-argument"), "/: numberp " + args[i]->str());
+                }
+
+                return res;
+            }
+    };
 }
 
 #endif  // LISP_FORMS_HPP
