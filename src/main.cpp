@@ -150,7 +150,7 @@ int test_interpreter()
                                         lisp::cons_cell_ptr_t(
                                             new lisp::cons_cell(
                                                 lisp::object_ptr_t(
-                                                    new lisp::float_number(4.5)))))));
+                                                    new lisp::number(4.5)))))));
 
     return 0;
 }
