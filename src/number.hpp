@@ -30,10 +30,11 @@
 #include <functional>
 #include <ostream>
 #include <assert.h>
+#include <cstdlib>
 
 #include "object.hpp"
-
-
+#include "arith_error.hpp"
+#include <iostream>
 namespace lisp 
 {
     /** number constructs objects holding a typed scalar value. It supports
@@ -46,27 +47,84 @@ namespace lisp
     {
     public:
 
-        class fraction {
-        public:
-            int n;
+        struct fraction {
+            fraction operator+(const fraction& other) const
+            {
+                if(n == 0 || other.n == 0)
+                    throw arith_error("division by zero");
+
+                fraction f = {z*other.n + n*other.z,
+                                n*other.n};
+                f.reduce();
+                return f;
+            }
+
+            fraction operator-(const fraction& other) const
+            {
+                if(n == 0 || other.n == 0)
+                    throw arith_error("division by zero");
+
+                fraction f = {z*other.n - n*other.z,
+                                n*other.n};
+                f.reduce();
+                return f;
+            }
+
+            fraction operator*(const fraction& other) const
+            {
+                if(n == 0 || other.n == 0)
+                    throw arith_error("division by zero");
+
+                fraction f = {z*other.z, n*other.n};
+                f.reduce();
+                return f;
+            }
+
+            fraction operator/(const fraction& other) const
+            {
+                if(n == 0 || other.z == 0)
+                    throw arith_error("division by zero");
+
+                fraction f = {z*other.n, n*other.z};
+                f.reduce();
+                return f;
+            }
+
+            fraction operator-() const
+            {
+                fraction f = {-z, n};
+                f.reduce();
+                return f;
+            }
+
+            void reduce()
+            {
+                if(n < 0) {
+                    n*=-1;
+                    z*=-1;
+                }
+
+                int t = ggt(abs(n),abs(z));
+
+                z/=t;
+                n/=t;
+            }
+
+            int ggt(int a, int b)
+            {
+                while(b != 0)
+                {
+                    int temp = a % b;
+                    a = b;
+                    b = temp;
+                }
+
+                return a;
+            }
+
             int z;
+            int n;
 
-            // fraction operator+(const number& other)
-            //     {
-                    
-            //     }
-
-            // fraction operator-(const number& other)
-            //     {
-            //     }
-
-            // fraction operator*(const number& other)
-            //     {
-            //     }
-
-            // fraction operator-()
-            //     {
-                // }
         };
 
         /// Enumeration establishing identifiers for all supported types. All
@@ -137,6 +195,12 @@ namespace lisp
             {
                 val._fraction.z = z;
                 val._fraction.n = n;
+            }
+
+        number(fraction f) : atype(ATTRTYPE_FRACTION)
+            {
+                val._fraction.z = f.z;
+                val._fraction.n = f.n;
             }
     
         /// Copy-constructor to deal with enclosed strings. Transfers type and

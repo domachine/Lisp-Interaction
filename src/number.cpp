@@ -32,9 +32,6 @@
 
 #include <boost/lexical_cast.hpp>
 
-#include "arith_error.hpp"
-
-
 namespace lisp {
     std::string number::get_type_string(attrtype_t at)
     {
@@ -155,6 +152,8 @@ namespace lisp {
             int z = as_long();
             val._fraction.z = z;
             val._fraction.n = 1;
+            atype = t;
+            return true;
         }
  
         }
@@ -195,8 +194,18 @@ namespace lisp {
             case ATTRTYPE_LONG:
             {
                 Operator<long long> op;
-                if (OpName == '/' && b.val._long == 0)
-                    throw arith_error("division by zero");
+                if (OpName == '/') {
+                    if(b.val._long == 0)
+                        throw arith_error("division by zero");
+                    if(val._long%b.val._long != 0) {
+                        number b2(b);
+                        b2.convert_type(ATTRTYPE_FRACTION);
+                        number a2(*this);
+                        a2.convert_type(ATTRTYPE_FRACTION);
+                        Operator<fraction> op2;
+                        return number(op2(a2.val._fraction, b2.val._fraction));
+                    }
+                }
 
                 return number( op(val._long, b.val._long) );
             }
@@ -207,17 +216,17 @@ namespace lisp {
                 return number( op(static_cast<double>(val._long), b.val._double) );
             }
 
-/*      Needs overloaded Operators for class fraction
+            case ATTRTYPE_FRACTION:
+            {
+                Operator<fraction> op;
+                if (OpName == '/' && b.val._long == 0)
+                    throw arith_error("division by zero");
 
-        case ATTRTYPE_FRACTION:
-        {
-        Operator<int> op;
-        if (OpName == '/' && b.val._long == 0) throw(ArithmeticException("Integer division by zero"));
-        number b2(*this);
-        b2.convertType(ATTRTYPE_FRACTION);
-        return number(op(val._long, b.val));
-        }
-*/
+                number a(*this);
+                a.convert_type(ATTRTYPE_FRACTION);
+                return number(op(a.val._fraction, b.val._fraction));
+            }
+
             }
             break;
         }
@@ -238,6 +247,50 @@ namespace lisp {
                 Operator<double> op;
                 return number( op(val._double, b.val._double) );
             }
+
+            case ATTRTYPE_FRACTION:
+            {
+                Operator<double> op;
+                number a(b);
+                a.convert_type(ATTRTYPE_DOUBLE);
+                return number( op(val._double, a.val._double) );
+            }
+
+            }
+
+            break;
+        }
+
+        case ATTRTYPE_FRACTION:
+        {
+            switch(b.atype)
+            {
+	    
+            case ATTRTYPE_LONG:
+            {
+                Operator<fraction> op;
+                if (OpName == '/' && b.val._long == 0)
+                    throw arith_error("division by zero");
+
+                number a(b);
+                a.convert_type(ATTRTYPE_FRACTION);
+                return number(op(val._fraction, a.val._fraction));
+            }
+
+            case ATTRTYPE_DOUBLE:
+            {
+                Operator<double> op;
+                number a(*this);
+                a.convert_type(ATTRTYPE_DOUBLE);
+                return number( op(a.val._double, b.val._double) );
+            }
+
+            case ATTRTYPE_FRACTION:
+            {
+                Operator<fraction> op;
+                return number( op(val._fraction, b.val._fraction) );
+            }
+
             }
 
             break;
