@@ -140,12 +140,17 @@ namespace lisp
 
 	    bool operator==(const fraction& other) const
 		{
-		    // dm: Shouldn't cost so much if the fraction is already
-		    //     reduced and is truely necessary if it is not.
-		    reduce();
+		    /*
+		      dm: If there should be a gmp implementation in
+		          future, we have to find another solution.
+		     */
+		    fraction f = {z, n};
+
+		    // dm: Shouldn't cost so much if the fraction is already reduced.
+		    f.reduce();
 
 		    // dm: Oh man these `z' and `n' members are so ugly :-D
-		    return z == other.z && n == other.n;
+		    return f.z == other.z && f.n == other.n;
 		}
 
             void reduce()
