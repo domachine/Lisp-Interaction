@@ -336,6 +336,12 @@ namespace lisp {
                 Operator<double> op;
                 return op(static_cast<double>(val._long), b.val._double);
             }
+	    case ATTRTYPE_FRACTION:
+	    {
+		Operator<const fraction&> op;
+		fraction tmp = {val._long, 1};
+		return op(tmp, b.val._fraction);
+	    }
             }
             break;
         }
