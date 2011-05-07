@@ -140,17 +140,7 @@ namespace lisp
 
 	    bool operator==(const fraction& other) const
 		{
-		    /*
-		      dm: If there should be a gmp implementation in
-		          future, we have to find another solution.
-		     */
-		    fraction f = {z, n};
-
-		    // dm: Shouldn't cost so much if the fraction is already reduced.
-		    f.reduce();
-
-		    // dm: Oh man these `z' and `n' members are so ugly :-D
-		    return f.z == other.z && f.n == other.n;
+            return (z*other.n == n*other.z);
 		}
 
 	    bool operator!=(const fraction& other) const
@@ -160,50 +150,30 @@ namespace lisp
 
 	    bool operator<(const fraction& other) const
 		{
-		    /*
-		      dm: Pretty ugly at the moment, but I don't have another idea
-		          at the moment
-		    */
-		    double res = z / n,
-			other_res = other.z / other.n;
-
-		    return res < other_res;
+            return (n < 0) xor
+                   (other.n < 0) xor
+                   (z*other.n < n*other.z);
 		}
 
 	    bool operator>(const fraction& other) const
 		{
-		    /*
-		      dm: Pretty ugly at the moment, but I don't have another idea
-		          at the moment
-		    */
-		    double res = z / n,
-			other_res = other.z / other.n;
-
-		    return res > other_res;
+            return (n < 0) xor
+                   (other.n < 0) xor
+                   (z*other.n > n*other.z);
 		}
 
 	    bool operator>=(const fraction& other) const
 		{
-		    /*
-		      dm: Pretty ugly at the moment, but I don't have another idea
-		          at the moment
-		    */
-		    double res = z / n,
-			other_res = other.z / other.n;
-
-		    return res >= other_res;
+            return (n < 0) xor
+                   (other.n < 0) xor
+                   (z*other.n >= n*other.z);
 		}
 
 	    bool operator<=(const fraction& other) const
 		{
-		    /*
-		      dm: Pretty ugly at the moment, but I don't have another idea
-		          at the moment
-		    */
-		    double res = z / n,
-			other_res = other.z / other.n;
-
-		    return res <= other_res;
+            return (n < 0) xor
+                   (other.n < 0) xor
+                   (z*other.n <= n*other.z);
 		}
 
             void reduce()
@@ -525,16 +495,6 @@ namespace lisp
             {
                 return binary_comp_op<std::greater_equal, 5>(b);
             }
-
-        // virtual bool is_int() const
-        //     {
-        //         return false;
-        //     }
-
-        // virtual bool is_float() const
-        //     {
-        //         return false;
-        //     }
 
         bool is_number() const
             {
