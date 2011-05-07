@@ -280,43 +280,22 @@ namespace lisp {
             }
     };
 
-    class plus_form : public cxx_function
+    template <template <typename Type> class Operator, char OpName>
+    class arith_op_form : public cxx_function
     {
         object_ptr_t operator()(environment* env,
                                 const argv_t& args)
             {
-                number_ptr_t sum = number_ptr_t(new number(static_cast<long long>(0)));
-                size_t sz = args.size();
-
-                for(unsigned int i = 0; i < sz; i++)
-                {
-                    if(args[i]->is_number())
-                    {
-                        
-                        number_ptr_t num = boost::dynamic_pointer_cast<lisp::number>(args[i]);
-
-                        *sum = *sum + *num;
-                    }
-                    else
-                        signal(env->get_symbol("wrong-type-argument"), "+: numberp " + args[i]->str());
-                }
-
-                return sum;
-            }
-    };
-
-    class div_form : public cxx_function
-    {
-        object_ptr_t operator()(environment* env,
-                                const argv_t& args)
-            {
+                std::string op_str = " ";
+                op_str[0] = OpName;
 
                 size_t sz = args.size();
                 if(sz <= 1)
                     signal(env->get_symbol("wrong-number-of-arguments"),
-                           "/");
+                           op_str);
                 if(!args[0]->is_number())
-                    signal(env->get_symbol("wrong-type-argument"), "/: numberp " + args[0]->str());
+                    signal(env->get_symbol("wrong-type-argument"),
+                           op_str + ": numberp " + args[0]->str());
 
                 number_ptr_t res =  boost::dynamic_pointer_cast<lisp::number>(args[0]);
 
@@ -325,11 +304,13 @@ namespace lisp {
                     if(args[i]->is_number())
                     {
                         number_ptr_t num = boost::dynamic_pointer_cast<lisp::number>(args[i]);
+                        Operator<number> op;
 
-                        *res = *res / *num;
+                        *res = op(*res, *num);
                     }
                     else
-                        signal(env->get_symbol("wrong-type-argument"), "/: numberp " + args[i]->str());
+                        signal(env->get_symbol("wrong-type-argument"),
+                               op_str + ": numberp " + args[i]->str());
                 }
 
                 return res;
