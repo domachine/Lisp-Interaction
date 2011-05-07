@@ -75,10 +75,7 @@ namespace lisp {
             case NUMBER:
             {
                 if(tok.value().find('.') != std::string::npos) {
-                    std::stringstream ss;
-                    ss << tok.value();
-                    double dnum;
-                    ss >> dnum;
+                    double dnum = from_string<double>(tok.value());
 
                     number_ptr_t num = number_ptr_t(new number(dnum));
 
@@ -86,22 +83,15 @@ namespace lisp {
                 }
                 else if(tok.value().find('/') != std::string::npos) {
                     size_t pos = tok.value().find('/');
-                    int nominator, denominator;
-                    std::stringstream ss, ss2;
-                    ss << tok.value().substr(0, pos);
-                    ss >> nominator;
-                    ss2 << tok.value().substr(pos+1, std::string::npos);
-                    ss2 >> denominator;
+                    int nominator = from_string<int>(tok.value().substr(0, pos));
+                    int denominator = from_string<int>(tok.value().substr(pos+1, std::string::npos));
 
                     number_ptr_t num = number_ptr_t(new number(nominator, denominator));
 
                     return num;
                 }
                 else {
-                    std::stringstream ss;
-                    ss << tok.value();
-                    long long lnum;
-                    ss >> lnum;
+                    long long lnum = from_string<long long>tok.value();
 
                     number_ptr_t num = number_ptr_t(new number(lnum));
 

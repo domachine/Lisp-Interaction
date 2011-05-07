@@ -25,6 +25,7 @@
 #ifndef _STX_AnyScalar_H_
 #define _STX_AnyScalar_H_
 
+#include <sstream>
 #include <string>
 #include <stdexcept>
 #include <functional>
@@ -37,6 +38,26 @@
 #include <iostream>
 namespace lisp 
 {
+
+    //I don't know where to put this, so I leave it here, as everything includes number.hpp
+    template <class T>
+    std::string to_string(T Converted)
+    {
+    	std::stringstream buffer;
+    	buffer << Converted;
+    	return buffer.str();
+    }
+
+    template <class T>
+    T from_string(std::string Converted)
+    {
+        std::stringstream buffer;
+        T ret;
+    	buffer << Converted;
+        buffer >> ret;
+    	return ret;
+    }
+
     /** number constructs objects holding a typed scalar value. It supports
      * boolean values, integer values both signed and unsigned, floating point
      * values and strings. The class provides operators which will compare scalars

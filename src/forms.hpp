@@ -286,16 +286,13 @@ namespace lisp {
         object_ptr_t operator()(environment* env,
                                 const argv_t& args)
             {
-                std::string op_str = " ";
-                op_str[0] = OpName;
-
                 size_t sz = args.size();
                 if(sz <= 1)
                     signal(env->get_symbol("wrong-number-of-arguments"),
-                           op_str);
+                           to_string(OpName));
                 if(!args[0]->is_number())
                     signal(env->get_symbol("wrong-type-argument"),
-                           op_str + ": numberp " + args[0]->str());
+                           to_string(OpName) + ": numberp " + args[0]->str());
 
                 number_ptr_t res =  boost::dynamic_pointer_cast<lisp::number>(args[0]);
 
@@ -310,7 +307,7 @@ namespace lisp {
                     }
                     else
                         signal(env->get_symbol("wrong-type-argument"),
-                               op_str + ": numberp " + args[i]->str());
+                               to_string(OpName) + ": numberp " + args[i]->str());
                 }
 
                 return res;
