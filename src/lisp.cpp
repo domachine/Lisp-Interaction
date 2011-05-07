@@ -65,11 +65,11 @@ namespace lisp {
             _global_env.get_symbol("+")->set_function(
                 object_ptr_t(new arith_op_form<std::plus, '+'>()));
             _global_env.get_symbol("-")->set_function(
-                object_ptr_t(new arith_op_form<std::plus, '-'>()));
+                object_ptr_t(new arith_op_form<std::minus, '-'>()));
             _global_env.get_symbol("*")->set_function(
-                object_ptr_t(new arith_op_form<std::plus, '*'>()));
+                object_ptr_t(new arith_op_form<std::multiplies, '*'>()));
             _global_env.get_symbol("/")->set_function(
-                object_ptr_t(new arith_op_form<std::plus, '/'>()));
+                object_ptr_t(new arith_op_form<std::divides, '/'>()));
 
             _global_env_initialized = true;
         }

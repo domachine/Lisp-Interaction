@@ -181,31 +181,47 @@ namespace lisp {
                 bool neg_number = true;
                 bool is_fraction = false;
 
+                //Needed, as / or - are Operators
+                bool really_number = true;
+
                 for(; m_iterator != m_end && *m_iterator != ' ' &&
                         *m_iterator != '\t' && *m_iterator != '\n' &&
                         *m_iterator != '"' && *m_iterator != '\'' &&
                         *m_iterator != '(' && *m_iterator != ')'; ++m_iterator) {
 
                     m_cache += *m_iterator;
+                    really_number = true;
 
                     if(m_current_token == NUMBER) {
                         if(*m_iterator == '.') {
                             if(float_point || is_fraction)
                                 m_current_token = SYMBOL;
-                            else
+                            else {
                                 float_point = true;
+                                really_number = false;
+                            }
                         }
                         else if(*m_iterator == '/') {
                             if(is_fraction || float_point)
                                 m_current_token = SYMBOL;
-                            else
+                            else {
                                 is_fraction = true;
+                                really_number = false;
+                            }
                         }
-                        else if(!isdigit(*m_iterator) && !(neg_number && *m_iterator == '-'))
-                            m_current_token = SYMBOL;
+                        else if(!isdigit(*m_iterator)) {
+                            if(neg_number && *m_iterator == '-') {
+                                really_number = false;
+                            }
+                            else
+                                m_current_token = SYMBOL;
+                        }
                     }
                     neg_number = false;
                 }
+
+                if(!really_number)
+                    m_current_token = SYMBOL;
 
                 return m_current_token;
             }

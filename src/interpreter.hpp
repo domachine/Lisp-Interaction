@@ -91,7 +91,7 @@ namespace lisp {
                     return num;
                 }
                 else {
-                    long long lnum = from_string<long long>tok.value();
+                    long long lnum = from_string<long long>(tok.value());
 
                     number_ptr_t num = number_ptr_t(new number(lnum));
 
