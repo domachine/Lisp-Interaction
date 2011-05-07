@@ -153,6 +153,59 @@ namespace lisp
 		    return f.z == other.z && f.n == other.n;
 		}
 
+	    bool operator!=(const fraction& other) const
+		{
+		    return !(*this == other);
+		}
+
+	    bool operator<(const fraction& other) const
+		{
+		    /*
+		      dm: Pretty ugly at the moment, but I don't have another idea
+		          at the moment
+		    */
+		    double res = z / n,
+			other_res = other.z / other.n;
+
+		    return res < other_res;
+		}
+
+	    bool operator>(const fraction& other) const
+		{
+		    /*
+		      dm: Pretty ugly at the moment, but I don't have another idea
+		          at the moment
+		    */
+		    double res = z / n,
+			other_res = other.z / other.n;
+
+		    return res > other_res;
+		}
+
+	    bool operator>=(const fraction& other) const
+		{
+		    /*
+		      dm: Pretty ugly at the moment, but I don't have another idea
+		          at the moment
+		    */
+		    double res = z / n,
+			other_res = other.z / other.n;
+
+		    return res >= other_res;
+		}
+
+	    bool operator<=(const fraction& other) const
+		{
+		    /*
+		      dm: Pretty ugly at the moment, but I don't have another idea
+		          at the moment
+		    */
+		    double res = z / n,
+			other_res = other.z / other.n;
+
+		    return res <= other_res;
+		}
+
             void reduce()
             {
                 if(n < 0) {
