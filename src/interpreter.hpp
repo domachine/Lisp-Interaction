@@ -84,6 +84,19 @@ namespace lisp {
 
                     return num;
                 }
+                else if(tok.value().find('/') != std::string::npos) {
+                    size_t pos = tok.value().find('/');
+                    int nominator, denominator;
+                    std::stringstream ss, ss2;
+                    ss << tok.value().substr(0, pos);
+                    ss >> nominator;
+                    ss2 << tok.value().substr(pos+1, std::string::npos);
+                    ss2 >> denominator;
+
+                    number_ptr_t num = number_ptr_t(new number(nominator, denominator));
+
+                    return num;
+                }
                 else {
                     std::stringstream ss;
                     ss << tok.value();
