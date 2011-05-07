@@ -39,7 +39,8 @@
 namespace lisp 
 {
 
-    //I don't know where to put this, so I leave it here, as everything includes number.hpp
+    // lm: I don't know where to put this, so I leave it here, as everything includes number.hpp
+    // dm: It's ok I think this place isn't as wrong as it seems :-)
     template <class T>
     std::string to_string(T Converted)
     {
@@ -136,6 +137,16 @@ namespace lisp
                 f.reduce();
                 return f;
             }
+
+	    bool operator==(const fraction& other) const
+		{
+		    // dm: Shouldn't cost so much if the fraction is already
+		    //     reduced and is truely necessary if it is not.
+		    reduce();
+
+		    // dm: Oh man these `z' and `n' members are so ugly :-D
+		    return z == other.z && n == other.n;
+		}
 
             void reduce()
             {
