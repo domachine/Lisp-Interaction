@@ -148,32 +148,42 @@ namespace lisp
 		    return !(*this == other);
 		}
 
+        //I couldn't test if the operators work as expected, but I never make mistakes… :-D
 	    bool operator<(const fraction& other) const
 		{
-            return (n < 0) xor
-                   (other.n < 0) xor
-                   (z*other.n < n*other.z);
+            //to compare the fractions, you can just multiply both sides with the denominators
+            //if you multiplied with a negative number, the operator is switched
+
+            // != is the same as xor, but xor (or ^) compares bitwise
+            return (((n < 0) !=
+                   (other.n < 0)) !=
+                   (z*other.n < n*other.z)) &&
+            //this is necessary, because the negation of < is >= …
+                   !(*this == other);
 		}
 
 	    bool operator>(const fraction& other) const
 		{
-            return (n < 0) xor
-                   (other.n < 0) xor
-                   (z*other.n > n*other.z);
+            return (((n < 0) !=
+                   (other.n < 0)) !=
+                   (z*other.n > n*other.z)) &&
+                   !(*this == other);
 		}
 
 	    bool operator>=(const fraction& other) const
 		{
-            return (n < 0) xor
-                   (other.n < 0) xor
-                   (z*other.n >= n*other.z);
+            return (((n < 0) !=
+                   (other.n < 0)) !=
+                   (z*other.n >= n*other.z)) ||
+                   (*this == other);
 		}
 
 	    bool operator<=(const fraction& other) const
 		{
-            return (n < 0) xor
-                   (other.n < 0) xor
-                   (z*other.n <= n*other.z);
+            return (((n < 0) !=
+                   (other.n < 0)) !=
+                   (z*other.n <= n*other.z)) ||
+                   (*this == other);
 		}
 
             void reduce()
