@@ -47,6 +47,25 @@ namespace lisp
     {
     public:
 
+        /// Enumeration establishing identifiers for all supported types. All
+        /// "small" integer types are included, because the class use originally
+        /// designed for serializing large amounts of data.
+        enum attrtype_t
+        {
+            /// Long (long) signed integer type, 8 bytes long.
+            ATTRTYPE_LONG = 0,
+
+            /// Double precision floating point type, 8 bytes long.
+            ATTRTYPE_DOUBLE = 1,
+
+            /// Fraction type
+            ATTRTYPE_FRACTION = 2
+        };
+
+    private:
+        /// The currently set type in the union.
+        attrtype_t          atype;
+
         struct fraction {
             fraction operator+(const fraction& other) const
             {
@@ -126,25 +145,6 @@ namespace lisp
             int n;
 
         };
-
-        /// Enumeration establishing identifiers for all supported types. All
-        /// "small" integer types are included, because the class use originally
-        /// designed for serializing large amounts of data.
-        enum attrtype_t
-        {
-            /// Long (long) signed integer type, 8 bytes long.
-            ATTRTYPE_LONG = 0,
-
-            /// Double precision floating point type, 8 bytes long.
-            ATTRTYPE_DOUBLE = 1,
-
-            /// Fraction type
-            ATTRTYPE_FRACTION = 2
-        };
-
-    private:
-        /// The currently set type in the union.
-        attrtype_t          atype;
 
         /// Union type to holding the current value of an number.
         union value_t
