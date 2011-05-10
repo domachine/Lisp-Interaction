@@ -4,6 +4,8 @@
 
 #include <stdexcept>
 
+#include <boost/regex.hpp>
+
 
 namespace lisp {
     /**
@@ -176,54 +178,30 @@ namespace lisp {
 
         token parse_symbol_or_number()
             {
-                m_current_token = NUMBER;
-                bool float_point = false;
-                bool neg_number = true;
-                bool is_fraction = false;
+                // bool float_point = false;
+                // bool neg_number = true;
+                // bool is_fraction = false;
 
                 //Needed, as / or - are Operators
-                bool really_number = true;
+                // bool really_number = true;
 
                 for(; m_iterator != m_end && *m_iterator != ' ' &&
                         *m_iterator != '\t' && *m_iterator != '\n' &&
                         *m_iterator != '"' && *m_iterator != '\'' &&
-                        *m_iterator != '(' && *m_iterator != ')'; ++m_iterator) {
+                        *m_iterator != '(' && *m_iterator != ')'; ++m_iterator)
 
                     m_cache += *m_iterator;
-                    really_number = true;
 
-                    if(m_current_token == NUMBER) {
-                        if(*m_iterator == '.') {
-                            if(float_point || is_fraction)
-                                m_current_token = SYMBOL;
-                            else {
-                                float_point = true;
-                                really_number = false;
-                            }
-                        }
-                        else if(*m_iterator == '/') {
-                            if(is_fraction || float_point)
-                                m_current_token = SYMBOL;
-                            else {
-                                is_fraction = true;
-                                really_number = false;
-                            }
-                        }
-                        else if(!isdigit(*m_iterator)) {
-                            if(neg_number && *m_iterator == '-') {
-                                really_number = false;
-                            }
-                            else
-                                m_current_token = SYMBOL;
-                        }
-                    }
-                    neg_number = false;
-                }
 
-                if(!really_number)
-                    m_current_token = SYMBOL;
+		boost::regex number_regex("^\\-?[0-9]+([\\./][0-9]+)?$");
 
-                return m_current_token;
+		if(boost::regex_match(m_cache, number_regex)) {
+		    logging::log(logging::DEBUG) << "is_number: " << m_cache << std::endl;
+		    return (m_current_token = NUMBER);
+		}
+
+		logging::log(logging::DEBUG) << "is_symbol: " << m_cache << std::endl;
+		return (m_current_token = SYMBOL);
             }
 
         int line() const
