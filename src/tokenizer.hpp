@@ -178,13 +178,6 @@ namespace lisp {
 
         token parse_symbol_or_number()
             {
-                // bool float_point = false;
-                // bool neg_number = true;
-                // bool is_fraction = false;
-
-                //Needed, as / or - are Operators
-                // bool really_number = true;
-
                 for(; m_iterator != m_end && *m_iterator != ' ' &&
                         *m_iterator != '\t' && *m_iterator != '\n' &&
                         *m_iterator != '"' && *m_iterator != '\'' &&
