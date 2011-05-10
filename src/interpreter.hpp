@@ -59,6 +59,7 @@ namespace lisp {
         object_ptr_t compile_expr(environment* env, tokenizer<T>& tok)
         {
             token lisp_token = tok.current_token();
+	    logging::log(logging::DEBUG) << tok.value() << std::endl;
 
             switch(lisp_token) {
             case LEFT_PARENTHESIS:
