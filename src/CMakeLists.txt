@@ -8,3 +8,4 @@ set(SRC main.cpp
   number.cpp)
 
 add_executable(lisp-test ${SRC})
+target_link_libraries(lisp-test ${Boost_LIBRARIES})
