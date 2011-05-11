@@ -1,5 +1,5 @@
 
-set(SRC main.cpp
+set(LIBSRC
   lisp.cpp
   object.cpp
   function.cpp cxx_function.cpp
@@ -7,5 +7,9 @@ set(SRC main.cpp
   # logging.cpp # numbers.cpp
   number.cpp)
 
-add_executable(lisp-test ${SRC})
-target_link_libraries(lisp-test ${Boost_LIBRARIES})
+set(EXESRC main.cpp)
+
+add_library(lisp-interaction ${LIBSRC})
+
+add_executable(lisp-test ${EXESRC})
+target_link_libraries(lisp-test lisp-interaction ${Boost_LIBRARIES})
