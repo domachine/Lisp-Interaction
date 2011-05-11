@@ -262,10 +262,16 @@ namespace lisp
         /// Construct a new number object of type ATTRTYPE_FRACTION and set the
         /// given value.
         inline number(int z, int n)
-            : atype(ATTRTYPE_FRACTION)
             {
-                val._fraction.z = z;
-                val._fraction.n = n;
+		if(z % n == 0) {
+		    val._long = z/n;
+		    atype = ATTRTYPE_LONG;
+		}
+		else {
+		    val._fraction.z = z;
+		    val._fraction.n = n;
+		    atype = ATTRTYPE_FRACTION;
+		}
             }
 
         number(fraction f) : atype(ATTRTYPE_FRACTION)
