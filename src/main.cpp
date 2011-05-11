@@ -139,8 +139,11 @@ BOOST_AUTO_TEST_CASE(number_test)
 
     lisp::number_ptr_t num = lisp::number_ptr_t(new number(1, 2));
 
-    BOOST_CHECK_EQUAL(number(static_cast<long long>(1)),
-		      (*num) + number(static_cast<double>(0.5)));
+    BOOST_CHECK_EQUAL((*num) + number(static_cast<double>(0.5)),
+		      number(static_cast<long long>(1)));
+
+    BOOST_CHECK_EQUAL(*num, number(0.5));
+    BOOST_CHECK_EQUAL(*num, number(1, 2));
 }
 
 /*
