@@ -1,8 +1,6 @@
 #ifndef LISP_INTERPRETER_HPP
 #define LISP_INTERPRETER_HPP
 
-#include "logging.hpp"
-
 #include "lisp.hpp"
 #include "tokenizer.hpp"
 #include "number.hpp"
@@ -16,9 +14,6 @@ namespace lisp {
         template <typename T>
         object_ptr_t compile_list(environment* env, tokenizer<T>& tok)
         {
-            using logging::log;
-            using logging::DEBUG;
-
             token lisp_token = tok.next_token();
 
             object_ptr_t car, cdr;
@@ -59,7 +54,7 @@ namespace lisp {
         object_ptr_t compile_expr(environment* env, tokenizer<T>& tok)
         {
             token lisp_token = tok.current_token();
-	    logging::log(logging::DEBUG) << tok.value() << std::endl;
+	    // logging::log(logging::DEBUG) << tok.value() << std::endl;
 
             switch(lisp_token) {
             case LEFT_PARENTHESIS:

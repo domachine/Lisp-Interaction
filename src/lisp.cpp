@@ -4,8 +4,6 @@
 
 #include <boost/foreach.hpp>
 
-#include "logging.hpp"
-
 #include "lisp.hpp"
 #include "function.hpp"
 #include "forms.hpp"

@@ -8,7 +8,6 @@
 
 #include <boost/shared_ptr.hpp>
 
-#include "logging.hpp"
 #include "types.hpp"
 
 

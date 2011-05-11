@@ -188,12 +188,9 @@ namespace lisp {
 
 		boost::regex number_regex("^\\-?[0-9]+([\\./][0-9]+)?$");
 
-		if(boost::regex_match(m_cache, number_regex)) {
-		    logging::log(logging::DEBUG) << "is_number: " << m_cache << std::endl;
+		if(boost::regex_match(m_cache, number_regex))
 		    return (m_current_token = NUMBER);
-		}
 
-		logging::log(logging::DEBUG) << "is_symbol: " << m_cache << std::endl;
 		return (m_current_token = SYMBOL);
             }
 
