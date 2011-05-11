@@ -88,7 +88,8 @@ namespace lisp
         /// The currently set type in the union.
         attrtype_t          atype;
 
-        struct fraction {
+        struct fraction
+	{
             fraction operator+(const fraction& other) const
             {
                 if(n == 0 || other.n == 0)

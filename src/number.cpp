@@ -340,6 +340,7 @@ namespace lisp {
 	    {
 		Operator<const fraction&> op;
 		fraction tmp = {val._long, 1};
+
 		return op(tmp, b.val._fraction);
 	    }
             }
