@@ -362,10 +362,46 @@ namespace lisp {
                 Operator<double> op;
                 return op(val._double, b.val._double);
             }
+
+	    case ATTRTYPE_FRACTION:
+	    {
+		Operator<double> op;
+		double tmp = val._double;
+
+		return op(tmp, b.val._double);
+	    }
             }
             break;
         }
 
+        case ATTRTYPE_FRACTION:
+        {
+            switch(b.atype)
+            {
+            case ATTRTYPE_LONG:
+            {
+		Operator<const fraction&> op;
+		fraction tmp = {b.val._long, 1};
+
+		return op(val._fraction, tmp);
+            }
+            case ATTRTYPE_DOUBLE:
+            {
+                Operator<double> op;
+                number a(*this);
+                a.convert_type(ATTRTYPE_DOUBLE);
+                return op(a.val._double, b.val._double);
+            }
+	    case ATTRTYPE_FRACTION:
+	    {
+		Operator<const fraction&> op;
+
+		return op(val._fraction, b.val._fraction);
+	    }
+            }
+
+            break;
+        }
         }
         assert(0);
         //throw(ConversionException("Invalid binary operator call. (PROGRAM ERROR)"));
