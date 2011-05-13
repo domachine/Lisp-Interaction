@@ -5,7 +5,7 @@ set(LIBSRC
   function.cpp cxx_function.cpp
   utils.cpp
   # logging.cpp # numbers.cpp
-  number.cpp)
+  number.cpp cxx_form.cpp)
 
 set(EXESRC main.cpp)
 
