@@ -12,7 +12,7 @@ namespace lisp {
     }
 
     object_ptr_t cxx_function_callback::operator()(environment* env,
-			    const cons_cell_ptr_t args)
+						   const cons_cell_ptr_t args)
     {
 	assert(args);
         object_ptr_t func = args->car();
