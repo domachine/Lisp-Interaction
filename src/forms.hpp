@@ -313,6 +313,30 @@ namespace lisp {
                 return res;
             }
     };
+
+    object_ptr_t funcall_form(environment* env,
+			      const std::vector<object_ptr_t>& args)
+    {
+	if(args.size() < 1)
+	    signal(env->get_symbol("wrong-number-of-arguments"),
+		   "funcall");
+
+	cons_cell_ptr_t c_args = cons_cell_ptr_t(new cons_cell());
+
+	cons_cell_ptr_t _args = c_args;
+
+	for(unsigned int i = 1; i < args.size(); ++i) {
+	    object_ptr_t arg = args[i];
+
+	    // Build up cons cell from argument list.
+	    cons_cell_ptr_t next = cons_cell_ptr_t(new cons_cell(arg));
+
+	    _args->set_cdr(next);
+	    _args = next;
+	}
+
+	return env->funcall(args[0], c_args);
+    }
 }
 
 #endif  // LISP_FORMS_HPP

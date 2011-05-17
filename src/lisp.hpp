@@ -86,7 +86,11 @@ namespace lisp {
 
         object_ptr_t car() const;
 
+	void set_car(object_ptr_t car);
+
         object_ptr_t cdr() const;
+
+	void set_cdr(object_ptr_t cdr);
 
         bool empty() const;
 

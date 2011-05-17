@@ -7,6 +7,7 @@
 #include "lisp.hpp"
 #include "function.hpp"
 #include "forms.hpp"
+#include "cxx_form.hpp"
 
 namespace lisp {
     namespace {
@@ -56,6 +57,8 @@ namespace lisp {
                 object_ptr_t(new setf_form()));
             _global_env.get_symbol("setq")->set_function(
                 object_ptr_t(new setq_form()));
+            _global_env.get_symbol("funcall")->set_function(
+                object_ptr_t(new cxx_function_callback(funcall_form)));
             _global_env.get_symbol("defun")->set_function(
                 object_ptr_t(new defun_form()));
             _global_env.get_symbol("equal")->set_function(
@@ -117,9 +120,19 @@ namespace lisp {
         return m_car;
     }
 
+    void cons_cell::set_car(object_ptr_t car)
+    {
+	m_car = car;
+    }
+
     object_ptr_t cons_cell::cdr() const
     {
         return m_cdr;
+    }
+
+    void cons_cell::set_cdr(object_ptr_t cdr)
+    {
+	m_cdr = cdr;
     }
 
     bool cons_cell::empty() const
@@ -200,10 +213,11 @@ namespace lisp {
     }
 
     object_ptr_t symbol::operator()(environment* env,
-                            const cons_cell_ptr_t args)
+				    const cons_cell_ptr_t args)
     {
-        if(m_function && *m_function)
+        if(m_function && *m_function) {
             return env->funcall(m_function, args);
+	}
         else
             return object_ptr_t();
     }
