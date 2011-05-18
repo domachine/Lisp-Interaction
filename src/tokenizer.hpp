@@ -94,6 +94,14 @@ namespace lisp {
                     case '\t':
                         last = *m_iterator;
                         break;
+		    case ';':
+			for(; m_iterator != m_end && *m_iterator != '\n'; ++m_iterator) {
+			    // Yeah, I know I could have put it in the loop-head ...
+			    if(*m_iterator == '\n')
+				break;
+			}
+
+			break;
                     default:
                         return parse_symbol_or_number();
                     }
