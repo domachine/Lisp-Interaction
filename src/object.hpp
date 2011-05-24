@@ -62,7 +62,7 @@ namespace lisp {
 
         virtual operator bool() const;
 
-        virtual bool operator==(const object& other)
+        virtual bool operator==(const object& other) const
             {
                 return m_class_id == other.m_class_id;
             }
