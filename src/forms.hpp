@@ -195,7 +195,68 @@ namespace lisp {
             }
     };
 
-    class defun_form : public object
+    // class defun_form : public object
+    // {
+    // protected:
+    //     object_ptr_t operator()(environment* env, const cons_cell_ptr_t args)
+    //         {
+    //             // Pop function object from top.
+    //             cons_cell_ptr_t cdr = list_next(args, "defun: listp");
+
+    //             if(!cdr)
+    //                 signal(env->get_symbol("wrong-number-of-arguments"),
+    //                        "defun");
+
+    //             // Determine function symbol.
+    //             object_ptr_t sym_raw = cdr->car();
+    //             if(!sym_raw->is_symbol_ref())
+    //                 signal(env->get_symbol("wrong-type-argument"),
+    //                        "symbolp <argument-1 to defun>");
+
+    //             symbol_ref_ptr_t sym_ref = boost::dynamic_pointer_cast<symbol_ref>(sym_raw);
+    //             symbol_ptr_t sym = env->get_symbol(sym_ref->name());
+
+    //             cdr = list_next(cdr, "defun: listp");
+
+    //             if(!cdr)
+    //                 signal(env->get_symbol("wrong-number-of-arguments"),
+    //                        "defun");
+
+    //             object_ptr_t arg_list = cdr->car();
+
+    //             if(!arg_list->is_cons_cell() && arg_list != nil())
+    //                 signal(env->get_symbol("wrong-type-argument"),
+    //                        "listp <argument-2 to defun>");
+
+    //             // Build functions from remaining arguments.
+    //             function::arg_sym_list_t function_arg_list;
+    //             cons_cell_ptr_t body = boost::dynamic_pointer_cast<cons_cell>(cdr->cdr());
+
+    //             if(arg_list->is_cons_cell()) {
+    //                 cons_cell_ptr_t arg_list_cell =
+    //                     boost::dynamic_pointer_cast<cons_cell>(arg_list);
+
+    //                 while(arg_list_cell && *arg_list_cell) {
+    //                     if(arg_list_cell->car()->is_symbol_ref()) {
+    //                         symbol_ref_ptr_t arg_sym =
+    //                             boost::dynamic_pointer_cast<symbol_ref>(arg_list_cell->car());
+
+    //                         function_arg_list.push_back(arg_sym->name());
+
+    //                         arg_list_cell =
+    //                             boost::dynamic_pointer_cast<cons_cell>(arg_list_cell->cdr());
+    //                     }
+    //                 }
+    //             }
+
+    //             // Manipulate symbol and return it.
+    //             sym->set_function(object_ptr_t(new function(function_arg_list, body)));
+    //             return sym;
+    //         }
+    // };
+
+    template <class T>
+    class define : public object
     {
     protected:
         object_ptr_t operator()(environment* env, const cons_cell_ptr_t args)
@@ -250,7 +311,7 @@ namespace lisp {
                 }
 
                 // Manipulate symbol and return it.
-                sym->set_function(object_ptr_t(new function(function_arg_list, body)));
+                sym->set_function(object_ptr_t(new T(function_arg_list, body)));
                 return sym;
             }
     };

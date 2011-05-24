@@ -6,6 +6,7 @@
 
 #include "lisp.hpp"
 #include "function.hpp"
+#include "macro.hpp"
 #include "forms.hpp"
 #include "cxx_form.hpp"
 
@@ -60,7 +61,9 @@ namespace lisp {
             _global_env.get_symbol("funcall")->set_function(
                 object_ptr_t(new cxx_function_callback(funcall_form)));
             _global_env.get_symbol("defun")->set_function(
-                object_ptr_t(new defun_form()));
+                object_ptr_t(new define<function>()));
+            _global_env.get_symbol("defmacro")->set_function(
+                object_ptr_t(new define<macro>()));
             _global_env.get_symbol("equal")->set_function(
                 object_ptr_t(new equal_form()));
             _global_env.get_symbol("+")->set_function(

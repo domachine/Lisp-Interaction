@@ -2,7 +2,9 @@
 set(LIBSRC
   lisp.cpp
   object.cpp
-  function.cpp cxx_function.cpp
+  function.cpp
+  macro.cpp
+  cxx_function.cpp
   utils.cpp
   # logging.cpp # numbers.cpp
   number.cpp cxx_form.cpp)
