@@ -90,7 +90,7 @@ namespace lisp {
                 cons_cell_ptr_t _args = list_next(args, "print: listp");
 
                 while(_args) {
-                    std::cerr << env->eval(_args->car())->str() << std::endl;
+                    std::cout << env->eval(_args->car())->str() << std::endl;
 
                     _args = list_next(_args, "print: listp");
                 }
@@ -334,7 +334,7 @@ namespace lisp {
                     signal(env->get_symbol("wrong-number-of-arguments"),
                            "equal");
 
-                if(env->eval(first->car()) == env->eval(second->car()))
+                if(*env->eval(first->car()) == *env->eval(second->car()))
                     return t();
                 else
                     return nil();
@@ -355,7 +355,8 @@ namespace lisp {
                     signal(env->get_symbol("wrong-type-argument"),
                            to_string(OpName) + ": numberp " + args[0]->str());
 
-                number_ptr_t res =  boost::dynamic_pointer_cast<lisp::number>(args[0]);
+                number_ptr_t operand =  boost::dynamic_pointer_cast<lisp::number>(args[0]);
+                number_ptr_t res = number_ptr_t(new number(*operand));
 
                 for(unsigned int i = 1; i < sz; i++)
                 {
