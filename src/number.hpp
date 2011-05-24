@@ -478,39 +478,63 @@ namespace lisp
 
     public:
         /// Instantiation of binary_comp_op for "==" equality.
-        inline bool         operator==(const number &b) const
+        bool         operator==(const object& b) const
             {
-                return binary_comp_op<std::equal_to, 0>(b);
+                if(!b.is_number())
+                    return false;
+
+                const number& num = dynamic_cast<const number&>(b);
+                return binary_comp_op<std::equal_to, 0>(num);
             }
 
         /// Instantiation of binary_comp_op for "!=" inequality.
-        inline bool         operator!=(const number &b) const
+        bool         operator!=(const object& b) const
             {
-                return binary_comp_op<std::not_equal_to, 1>(b);
+                if(!b.is_number())
+                    return false;
+
+                const number& num = dynamic_cast<const number&>(b);
+                return binary_comp_op<std::not_equal_to, 1>(num);
             }
 
         /// Instantiation of binary_comp_op for "<" less-than.
-        inline bool         operator<(const number &b) const
+        bool         operator<(const object& b) const
             {
-                return binary_comp_op<std::less, 2>(b);
+                if(!b.is_number())
+                    return false;
+
+                const number& num = dynamic_cast<const number&>(b);
+                return binary_comp_op<std::less, 2>(num);
             }
 
         /// Instantiation of binary_comp_op for ">" greater-than.
-        inline bool         operator>(const number &b) const
+        bool         operator>(const object& b) const
             {
-                return binary_comp_op<std::greater, 3>(b);
+                if(!b.is_number())
+                    return false;
+
+                const number& num = dynamic_cast<const number&>(b);
+                return binary_comp_op<std::greater, 3>(num);
             }
 
         /// Instantiation of binary_comp_op for "<=" less-or-equal-than.
-        inline bool         operator<=(const number &b) const
+        bool         operator<=(const object& b) const
             {
-                return binary_comp_op<std::less_equal, 4>(b);
+                if(!b.is_number())
+                    return false;
+
+                const number& num = dynamic_cast<const number&>(b);
+                return binary_comp_op<std::less_equal, 4>(num);
             }
 
         /// Instantiation of binary_comp_op for ">=" greater-or-equal-than.
-        inline bool         operator>=(const number &b) const
+        bool         operator>=(const object& b) const
             {
-                return binary_comp_op<std::greater_equal, 5>(b);
+                if(!b.is_number())
+                    return false;
+
+                const number& num = dynamic_cast<const number&>(b);
+                return binary_comp_op<std::greater_equal, 5>(num);
             }
 
         bool is_number() const
