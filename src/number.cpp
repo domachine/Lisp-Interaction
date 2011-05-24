@@ -336,13 +336,13 @@ namespace lisp {
                 Operator<double> op;
                 return op(static_cast<double>(val._long), b.val._double);
             }
-	    case ATTRTYPE_FRACTION:
-	    {
-		Operator<const fraction&> op;
-		fraction tmp = {val._long, 1};
+            case ATTRTYPE_FRACTION:
+            {
+                Operator<const fraction&> op;
+                fraction tmp = {val._long, 1};
 
-		return op(tmp, b.val._fraction);
-	    }
+                return op(tmp, b.val._fraction);
+            }
             }
             break;
         }
@@ -363,13 +363,13 @@ namespace lisp {
                 return op(val._double, b.val._double);
             }
 
-	    case ATTRTYPE_FRACTION:
-	    {
-		Operator<double> op;
-		double tmp = val._double;
+            case ATTRTYPE_FRACTION:
+            {
+                Operator<double> op;
+                double tmp = val._double;
 
-		return op(tmp, b.val._double);
-	    }
+                return op(tmp, b.val._double);
+            }
             }
             break;
         }
@@ -380,10 +380,10 @@ namespace lisp {
             {
             case ATTRTYPE_LONG:
             {
-		Operator<const fraction&> op;
-		fraction tmp = {b.val._long, 1};
+                Operator<const fraction&> op;
+                fraction tmp = {b.val._long, 1};
 
-		return op(val._fraction, tmp);
+                return op(val._fraction, tmp);
             }
             case ATTRTYPE_DOUBLE:
             {
@@ -392,12 +392,12 @@ namespace lisp {
                 a.convert_type(ATTRTYPE_DOUBLE);
                 return op(a.val._double, b.val._double);
             }
-	    case ATTRTYPE_FRACTION:
-	    {
-		Operator<const fraction&> op;
+            case ATTRTYPE_FRACTION:
+            {
+                Operator<const fraction&> op;
 
-		return op(val._fraction, b.val._fraction);
-	    }
+                return op(val._fraction, b.val._fraction);
+            }
             }
 
             break;
